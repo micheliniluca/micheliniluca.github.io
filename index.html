@@ -23,6 +23,7 @@
   --bg:#12171c; --surface:#1a2027; --ink:#e8eef3; --muted:#8b99a6; --line:#2a333c;
   --accent:#5b9be0; --accent-soft:#1f2d3c; --ok:#4fb26a; color-scheme:dark }
 *{box-sizing:border-box}
+[hidden]{display:none!important}
 html,body{background:var(--bg); color:var(--ink)}
 body{margin:0; font-family:var(--f-ui); font-size:16px; line-height:1.4;
   padding-left:max(16px,env(safe-area-inset-left,0px)); padding-right:max(16px,env(safe-area-inset-right,0px));
@@ -49,6 +50,14 @@ button{cursor:pointer}
 .meta{display:flex; flex-wrap:wrap; gap:6px 12px; align-items:center; margin-top:auto; padding-top:6px; font-size:13px; color:var(--muted); font-family:var(--f-mono)}
 .meta a{color:var(--muted)}
 .chip{font-family:var(--f-ui); font-size:12px; font-weight:600; letter-spacing:.06em; text-transform:uppercase; padding:1px 7px; border-radius:5px; background:var(--accent-soft); color:var(--accent)}
+.thumb{position:relative; aspect-ratio:16/10; margin:-14px -16px 4px; border-radius:11px 11px 0 0; overflow:hidden; background:var(--bg); border-bottom:1px solid var(--line)}
+.thumb .ph{position:absolute; inset:0; display:flex; align-items:center; justify-content:center; font-family:var(--f-mono); font-size:13px; color:var(--muted)}
+.thumb iframe{position:absolute; top:0; left:0; width:1280px; height:800px; border:0; transform-origin:0 0; pointer-events:none; background:#fff; opacity:0; transition:opacity .25s}
+.thumb iframe.ready{opacity:1}
+.thumb a{position:absolute; inset:0; z-index:1}
+.thumb a:focus-visible{outline-offset:-3px}
+body.noprev .thumb{display:none}
+@media (prefers-reduced-motion: reduce){ .thumb iframe{transition:none} }
 .empty{padding:28px 16px; text-align:center; color:var(--muted); border:1px dashed var(--line); border-radius:12px}
 .ask{display:flex; gap:8px; flex-wrap:wrap; margin-bottom:16px}
 footer{margin-top:28px; font-size:13px; color:var(--muted)}
@@ -69,6 +78,7 @@ footer a{color:var(--muted)}
         <option value="name">Nome A–Z</option>
         <option value="created">Create di recente</option>
       </select>
+      <button id="prev" aria-pressed="true" title="Mostra o nascondi le anteprime dei siti">Anteprime: sì</button>
       <button id="reload" title="Rileggi l'elenco da GitHub">Aggiorna</button>
     </div>
   </header>
@@ -151,6 +161,7 @@ footer a{color:var(--muted)}
       : 'Nessun repository pubblico con GitHub Pages attivo.';
     $('#grid').innerHTML = list.length ? list.map(r => `
       <article class="card">
+        <div class="thumb" data-src="${esc(r.url)}"><span class="ph">anteprima…</span><a href="${esc(r.url)}" aria-label="Apri ${esc(r.name)}" tabindex="-1"></a></div>
         <h2><a href="${esc(r.url)}">${esc(r.name)}</a></h2>
         <a class="url" href="${esc(r.url)}">${esc(r.url.replace(/^https?:\/\//, ''))}</a>
         ${r.desc ? `<p>${esc(r.desc)}</p>` : ''}
@@ -162,11 +173,42 @@ footer a{color:var(--muted)}
         </div>
       </article>`).join('')
       : (repos.length ? '<div class="empty">Nessun sito corrisponde alla ricerca.</div>' : '');
+    document.querySelectorAll('.thumb').forEach(t => { resizeObs.observe(t); if (previews) io.observe(t); });
+  }
+
+  // ---- anteprime: il sito vero, rimpicciolito, caricato solo quando la scheda è visibile ----
+  let previews = store.get('pages-index:prev') !== false;
+  const W = 1280;
+  const fit = t => { const f = t.querySelector('iframe'); if (f) f.style.transform = `scale(${t.clientWidth / W})`; };
+  const resizeObs = new ResizeObserver(es => es.forEach(e => fit(e.target)));
+  const io = new IntersectionObserver(es => es.forEach(e => {
+    if (!e.isIntersecting) return;
+    const t = e.target; io.unobserve(t);
+    if (t.querySelector('iframe')) return;
+    const f = document.createElement('iframe');
+    f.src = t.dataset.src;
+    f.title = 'Anteprima di ' + t.dataset.src;
+    f.setAttribute('sandbox', 'allow-scripts');      // niente navigazione, popup o accesso ai dati di questa pagina
+    f.setAttribute('scrolling', 'no');
+    f.tabIndex = -1;
+    f.addEventListener('load', () => { f.classList.add('ready'); const ph = t.querySelector('.ph'); if (ph) ph.remove(); });
+    setTimeout(() => { const ph = t.querySelector('.ph'); if (ph && !f.classList.contains('ready')) ph.textContent = 'anteprima non disponibile'; }, 15000);
+    t.insertBefore(f, t.querySelector('a'));
+    fit(t);
+  }), { rootMargin: '300px' });
+  function setPreviews(on) {
+    previews = on; store.set('pages-index:prev', on);
+    document.body.classList.toggle('noprev', !on);
+    $('#prev').textContent = 'Anteprime: ' + (on ? 'sì' : 'no');
+    $('#prev').setAttribute('aria-pressed', on);
+    if (on) document.querySelectorAll('.thumb').forEach(t => { if (!t.querySelector('iframe')) io.observe(t); });
   }
 
   $('#q').addEventListener('input', render);
   $('#sort').addEventListener('change', () => { render(); store.set('pages-index:sort', $('#sort').value); });
   $('#reload').addEventListener('click', () => load(true));
+  $('#prev').addEventListener('click', () => setPreviews(!previews));
+  setPreviews(previews);
   $('#ask').addEventListener('submit', e => { e.preventDefault(); user = $('#user').value.trim(); if (user) { $('#ask').hidden = true; load(true); } });
   const s = store.get('pages-index:sort'); if (s) $('#sort').value = s;
   load(false);
