@@ -1,75 +1,199 @@
 <!doctype html>
-<html lang="it">
+<html lang="it" class="fx">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Le mie GitHub Pages</title>
 <meta name="description" content="Elenco automatico di tutti i siti GitHub Pages pubblicati da questo account.">
+<script>try{if(JSON.parse(localStorage.getItem('pages-index:fx'))===false)document.documentElement.classList.remove('fx')}catch(_){}</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Semi+Condensed:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Semi+Condensed:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500&family=Cinzel:wght@500;600;700&family=Cinzel+Decorative:wght@700&family=EB+Garamond:ital,wght@0,400;0,500;1,400&display=swap">
 <style>
-/* Layout: intestazione con ricerca, poi griglia di schede (una colonna su telefono) */
+/* Layout: intestazione (titolo + strumenti), griglia di schede; tema fantasy = pergamena e oro su mappa, braci in volo, catena di monti sul fondo */
 :root{
-  --bg:#e6eaee; --surface:#f6f8fa; --ink:#14202b; --muted:#5b6977; --line:#c9d1d9;
-  --accent:#2d6db3; --accent-soft:#d6e3f2; --ok:#2f8a47;
+  --bg:#e6eaee; --bg2:#e6eaee; --surface:#f6f8fa; --ink:#14202b; --muted:#5b6977; --line:#c9d1d9;
+  --accent:#2d6db3; --accent-soft:#d6e3f2; --gold:#2d6db3; --gold2:#2d6db3; --glow:transparent; --seal:#b03a2e;
+  --mount:transparent;
   --f-ui:"Barlow Semi Condensed","Arial Narrow",system-ui,sans-serif;
+  --f-head:var(--f-ui); --f-title:var(--f-ui); --f-body:var(--f-ui);
   --f-mono:"IBM Plex Mono",ui-monospace,Menlo,Consolas,monospace;
 }
 @media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
-  --bg:#12171c; --surface:#1a2027; --ink:#e8eef3; --muted:#8b99a6; --line:#2a333c;
-  --accent:#5b9be0; --accent-soft:#1f2d3c; --ok:#4fb26a; color-scheme:dark }}
+  --bg:#12171c; --bg2:#12171c; --surface:#1a2027; --ink:#e8eef3; --muted:#8b99a6; --line:#2a333c;
+  --accent:#5b9be0; --accent-soft:#1f2d3c; --gold:#5b9be0; --gold2:#5b9be0; color-scheme:dark }}
 :root[data-theme="dark"]{
-  --bg:#12171c; --surface:#1a2027; --ink:#e8eef3; --muted:#8b99a6; --line:#2a333c;
-  --accent:#5b9be0; --accent-soft:#1f2d3c; --ok:#4fb26a; color-scheme:dark }
+  --bg:#12171c; --bg2:#12171c; --surface:#1a2027; --ink:#e8eef3; --muted:#8b99a6; --line:#2a333c;
+  --accent:#5b9be0; --accent-soft:#1f2d3c; --gold:#5b9be0; --gold2:#5b9be0; color-scheme:dark }
+
+/* ---- tema fantasy: pergamena (chiaro) ---- */
+:root.fx{
+  --bg:#e9dcb9; --bg2:#d9c493; --surface:#f4e9cc; --ink:#2b1e10; --muted:#6f5636; --line:#a8874f;
+  --accent:#7a2e1f; --accent-soft:#ead8ae; --gold:#835a12; --gold2:#d9a63a; --glow:rgba(214,163,58,.45); --seal:#8e2318;
+  --mount:#6b5532;
+  --f-head:"Cinzel",Georgia,serif; --f-title:"Cinzel Decorative","Cinzel",Georgia,serif; --f-body:"EB Garamond",Georgia,serif;
+}
+/* ---- tema fantasy: notte a lume di candela (scuro) ---- */
+@media (prefers-color-scheme: dark){ :root.fx:not([data-theme="light"]){
+  --bg:#0e1311; --bg2:#1b231c; --surface:#211a12; --ink:#eadcb6; --muted:#b39c72; --line:#5d4a2a;
+  --accent:#e0a95a; --accent-soft:#3a2c1a; --gold:#c9963a; --gold2:#f2cf72; --glow:rgba(242,190,90,.35); --seal:#a8322a;
+  --mount:#2c3a2e; color-scheme:dark }}
+:root.fx[data-theme="dark"]{
+  --bg:#0e1311; --bg2:#1b231c; --surface:#211a12; --ink:#eadcb6; --muted:#b39c72; --line:#5d4a2a;
+  --accent:#e0a95a; --accent-soft:#3a2c1a; --gold:#c9963a; --gold2:#f2cf72; --glow:rgba(242,190,90,.35); --seal:#a8322a;
+  --mount:#2c3a2e; color-scheme:dark }
+
 *{box-sizing:border-box}
 [hidden]{display:none!important}
 html,body{background:var(--bg); color:var(--ink)}
-body{margin:0; font-family:var(--f-ui); font-size:16px; line-height:1.4;
+body{margin:0; font-family:var(--f-body); font-size:16px; line-height:1.4; min-height:100vh; position:relative;
   padding-left:max(16px,env(safe-area-inset-left,0px)); padding-right:max(16px,env(safe-area-inset-right,0px));
-  padding-block:max(24px,env(safe-area-inset-top,0px)) 48px}
-.wrap{max-width:1040px; margin:0 auto}
-header{display:flex; flex-wrap:wrap; align-items:flex-end; justify-content:space-between; gap:12px 24px; margin-bottom:18px}
-h1{margin:0; font-size:30px; font-weight:700; letter-spacing:.005em; text-wrap:balance}
-.who{font-family:var(--f-mono); font-size:13px; color:var(--muted); margin-top:2px}
+  padding-block:max(20px,env(safe-area-inset-top,0px)) 64px}
+.fx body{font-size:17px;
+  background:
+    radial-gradient(ellipse at 50% -10%, color-mix(in srgb, var(--gold2) 18%, transparent), transparent 60%),
+    radial-gradient(ellipse at 50% 120%, var(--bg2), transparent 70%),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='260' height='260'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.75' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .3 0 0 0 0 .2 0 0 0 0 .08 0 0 0 .22 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"),
+    var(--bg)}
+.wrap{max-width:1080px; margin:0 auto; position:relative; z-index:1}
+
+#embers{position:fixed; inset:0; width:100%; height:100%; pointer-events:none; z-index:0; display:none}
+.fx #embers{display:block}
+.mountains{position:fixed; left:0; right:0; bottom:0; height:min(26vh,220px); pointer-events:none; z-index:0; display:none; opacity:.55}
+.fx .mountains{display:block}
+.mountains svg{width:100%; height:100%; display:block}
+
+/* ---- intestazione ---- */
+.topbar{display:flex; justify-content:flex-end; margin-bottom:6px}
+#fxbtn{display:inline-flex; align-items:center; gap:8px}
+#fxbtn svg{width:18px; height:18px}
+header{display:flex; flex-wrap:wrap; align-items:flex-end; justify-content:space-between; gap:14px 24px; margin-bottom:10px}
+.brand{display:flex; align-items:center; gap:14px; min-width:0}
+.ring{display:none; width:62px; height:62px; flex:none; filter:drop-shadow(0 0 10px var(--glow))}
+.fx .ring{display:block}
+.ring .band{transform-origin:50% 50%; animation:spin 14s linear infinite}
+.ring .halo{animation:pulse 4s ease-in-out infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes pulse{0%,100%{opacity:.25}50%{opacity:.7}}
+h1{margin:0; font-family:var(--f-ui); font-size:30px; font-weight:700; line-height:1.1; text-wrap:balance}
+.fx h1{font-family:var(--f-title); font-size:clamp(28px,5vw,44px); letter-spacing:.01em;
+  background:linear-gradient(100deg, var(--gold) 0%, var(--gold) 38%, var(--gold2) 50%, var(--gold) 62%, var(--gold) 100%);
+  background-size:250% 100%; -webkit-background-clip:text; background-clip:text; color:transparent;
+  animation:shimmer 7s ease-in-out infinite; text-shadow:0 1px 0 color-mix(in srgb, var(--surface) 40%, transparent)}
+@keyframes shimmer{0%,100%{background-position:100% 0}50%{background-position:0 0}}
+.who{font-family:var(--f-mono); font-size:13px; color:var(--muted); margin-top:3px}
+.fx .who{font-family:var(--f-body); font-style:italic; font-size:17px}
 .tools{display:flex; gap:8px; flex-wrap:wrap; align-items:center}
-input,select,button{font:inherit; color:var(--ink); background:var(--surface); border:1px solid var(--line); border-radius:8px; padding:7px 10px}
+input,select,button{font:inherit; font-size:15px; color:var(--ink); background:var(--surface); border:1px solid var(--line); border-radius:8px; padding:7px 11px}
+.fx input,.fx select,.fx button{font-family:var(--f-head); font-size:14px; letter-spacing:.03em; border-radius:4px; border-color:var(--gold);
+  box-shadow:inset 0 0 0 1px color-mix(in srgb, var(--gold2) 25%, transparent)}
+.fx input{font-family:var(--f-body); font-size:16px; font-style:italic; letter-spacing:0}
 input:focus-visible,select:focus-visible,button:focus-visible,a:focus-visible{outline:2px solid var(--accent); outline-offset:2px}
 #q{width:min(260px,100%)}
-button{cursor:pointer}
-.status{font-size:14px; color:var(--muted); margin:0 0 14px; min-height:20px}
-.status.err{color:#c84545}
-.grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(290px,1fr)); gap:12px}
-.card{background:var(--surface); border:1px solid var(--line); border-radius:12px; padding:14px 16px 12px; display:flex; flex-direction:column; gap:6px; min-width:0}
+button{cursor:pointer; transition:box-shadow .2s, transform .1s}
+.fx button:hover{box-shadow:0 0 12px var(--glow), inset 0 0 0 1px var(--gold2)}
+button:active{transform:translateY(1px)}
+
+.divider{display:none; margin:6px 0 16px; color:var(--gold)}
+.fx .divider{display:block}
+.divider svg{width:100%; height:22px; display:block}
+
+.status{font-size:14px; color:var(--muted); margin:0 0 16px; min-height:20px}
+.fx .status{font-family:var(--f-head); font-size:14px; letter-spacing:.12em; text-transform:uppercase; text-align:center}
+.status.err{color:var(--seal)}
+
+/* ---- schede ---- */
+.grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(290px,1fr)); gap:14px}
+.fx .grid{gap:22px}
+.card{background:var(--surface); border:1px solid var(--line); border-radius:12px; padding:14px 16px 12px; display:flex; flex-direction:column; gap:6px; min-width:0; position:relative; transition:transform .25s ease, box-shadow .25s ease, border-color .2s}
 .card:hover{border-color:var(--accent)}
-.card h2{margin:0; font-size:20px; font-weight:600; line-height:1.2; overflow-wrap:anywhere}
+.fx .card{border-radius:3px; border-color:var(--gold); padding:16px 18px 14px;
+  background:
+    radial-gradient(ellipse at 50% 0%, color-mix(in srgb, var(--gold2) 10%, transparent), transparent 70%),
+    linear-gradient(180deg, var(--surface), color-mix(in srgb, var(--surface) 88%, var(--bg2)));
+  box-shadow:inset 0 0 0 4px var(--surface), inset 0 0 0 5px color-mix(in srgb, var(--gold) 55%, transparent), 0 6px 18px rgba(40,25,5,.18);
+  animation:unfurl .7s cubic-bezier(.2,.7,.2,1) both; animation-delay:calc(var(--i,0) * 70ms)}
+.fx .card:hover{transform:translateY(-4px); box-shadow:inset 0 0 0 4px var(--surface), inset 0 0 0 5px var(--gold2), 0 10px 28px rgba(40,25,5,.25), 0 0 22px var(--glow)}
+@keyframes unfurl{from{opacity:0; transform:translateY(14px) scaleY(.94)}to{opacity:1; transform:none}}
+/* angoli ornati */
+.fx .card::before,.fx .card::after{content:""; position:absolute; width:18px; height:18px; border:2px solid var(--gold); pointer-events:none; z-index:2}
+.fx .card::before{top:7px; left:7px; border-right:0; border-bottom:0}
+.fx .card::after{bottom:7px; right:7px; border-left:0; border-top:0}
+
+.card h2{margin:0; font-family:var(--f-ui); font-size:20px; font-weight:600; line-height:1.2; overflow-wrap:anywhere}
+.fx .card h2{font-family:var(--f-head); font-size:21px; font-weight:700; letter-spacing:.02em; text-align:center}
 .card h2 a{color:var(--ink); text-decoration:none}
 .card h2 a:hover{color:var(--accent)}
 .card p{margin:0; color:var(--muted); font-size:15px; overflow-wrap:anywhere}
+.fx .card p{font-size:17px; text-align:center; font-style:italic}
 .url{font-family:var(--f-mono); font-size:12.5px; color:var(--accent); overflow-wrap:anywhere; text-decoration:none}
+.fx .url{text-align:center; font-size:12px}
 .meta{display:flex; flex-wrap:wrap; gap:6px 12px; align-items:center; margin-top:auto; padding-top:6px; font-size:13px; color:var(--muted); font-family:var(--f-mono)}
+.fx .meta{justify-content:center; font-family:var(--f-body); font-size:15px; border-top:1px solid color-mix(in srgb, var(--gold) 40%, transparent); padding-top:9px; margin-top:6px}
 .meta a{color:var(--muted)}
 .chip{font-family:var(--f-ui); font-size:12px; font-weight:600; letter-spacing:.06em; text-transform:uppercase; padding:1px 7px; border-radius:5px; background:var(--accent-soft); color:var(--accent)}
+.fx .chip{font-family:var(--f-head); background:var(--seal); color:#f6e7c8; border-radius:50%; width:44px; height:44px; display:inline-flex; align-items:center; justify-content:center; padding:0; font-size:8.5px; letter-spacing:.04em; box-shadow:inset 0 0 0 2px rgba(0,0,0,.18), 0 2px 4px rgba(0,0,0,.25); position:absolute; top:-10px; right:-8px; z-index:3; transform:rotate(-12deg)}
+
 .thumb{position:relative; aspect-ratio:16/10; margin:-14px -16px 4px; border-radius:11px 11px 0 0; overflow:hidden; background:var(--bg); border-bottom:1px solid var(--line)}
+.fx .thumb{margin:0 0 8px; border-radius:2px; border:3px double var(--gold); box-shadow:0 0 0 1px color-mix(in srgb, var(--gold2) 30%, transparent), inset 0 0 20px rgba(0,0,0,.25)}
+.fx .thumb::after{content:""; position:absolute; inset:0; pointer-events:none; background:radial-gradient(ellipse at center, transparent 55%, rgba(60,35,5,.28)); z-index:1}
 .thumb .ph{position:absolute; inset:0; display:flex; align-items:center; justify-content:center; font-family:var(--f-mono); font-size:13px; color:var(--muted)}
-.thumb iframe{position:absolute; top:0; left:0; width:1280px; height:800px; border:0; transform-origin:0 0; pointer-events:none; background:#fff; opacity:0; transition:opacity .25s}
+.fx .thumb .ph{font-family:var(--f-body); font-style:italic; font-size:15px}
+.thumb iframe{position:absolute; top:0; left:0; width:1280px; height:800px; border:0; transform-origin:0 0; pointer-events:none; background:#fff; opacity:0; transition:opacity .4s}
 .thumb iframe.ready{opacity:1}
-.thumb a{position:absolute; inset:0; z-index:1}
+.fx .thumb iframe.ready{filter:sepia(.18) saturate(.95)}
+.fx .card:hover .thumb iframe.ready{filter:none}
+.thumb a{position:absolute; inset:0; z-index:2}
 .thumb a:focus-visible{outline-offset:-3px}
-body.noprev .thumb{display:none}
-@media (prefers-reduced-motion: reduce){ .thumb iframe{transition:none} }
-.empty{padding:28px 16px; text-align:center; color:var(--muted); border:1px dashed var(--line); border-radius:12px}
+.noprev .thumb{display:none}
+
+.empty{padding:28px 16px; text-align:center; color:var(--muted); border:1px dashed var(--line); border-radius:12px; grid-column:1/-1}
 .ask{display:flex; gap:8px; flex-wrap:wrap; margin-bottom:16px}
-footer{margin-top:28px; font-size:13px; color:var(--muted)}
+footer{margin-top:32px; font-size:13px; color:var(--muted); text-align:center}
+.fx footer{font-style:italic; font-size:15px}
 footer a{color:var(--muted)}
+
+@media (prefers-reduced-motion: reduce){
+  .ring .band,.ring .halo,.fx h1,.fx .card{animation:none}
+  .thumb iframe,.card,button{transition:none}
+  .fx .card:hover{transform:none}
+}
 </style>
 </head>
 <body>
+<canvas id="embers" aria-hidden="true"></canvas>
+<div class="mountains" aria-hidden="true">
+  <svg viewBox="0 0 1200 220" preserveAspectRatio="none">
+    <path fill="var(--mount)" opacity=".55" d="M0 220V150l60-30 50 22 70-58 40 30 60-62 55 48 45-20 80 70 60-44 50 26 70-80 45 40 55-18 75 64 60-36 50 30 70-58 40 24 60-40 55 46V220Z"/>
+    <path fill="var(--mount)" d="M0 220v-36l80-28 60 20 90-46 70 40 60-22 110 50 70-34 80 26 90-52 60 36 80-20 70 34 90-42 70 30 60-14 90 42V220Z"/>
+  </svg>
+</div>
+
 <div class="wrap">
+  <div class="topbar">
+    <button id="fxbtn" aria-pressed="true" title="Attiva o disattiva il tema grafico">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="7"/><circle cx="12" cy="12" r="4" stroke-width="1"/></svg>
+      <span id="fxlbl">Tema fantasy: sì</span>
+    </button>
+  </div>
   <header>
-    <div>
-      <h1>Le mie GitHub Pages</h1>
-      <div class="who" id="who"></div>
+    <div class="brand">
+      <svg class="ring" viewBox="0 0 64 64" aria-hidden="true">
+        <defs>
+          <linearGradient id="gband" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0" stop-color="#7a5311"/><stop offset=".35" stop-color="#f6d77a"/><stop offset=".55" stop-color="#b8861f"/><stop offset=".8" stop-color="#ffe9a8"/><stop offset="1" stop-color="#8a5f14"/>
+          </linearGradient>
+          <radialGradient id="ghalo"><stop offset=".55" stop-color="#ffcf6a" stop-opacity=".0"/><stop offset=".75" stop-color="#ffcf6a" stop-opacity=".55"/><stop offset="1" stop-color="#ffcf6a" stop-opacity="0"/></radialGradient>
+        </defs>
+        <circle class="halo" cx="32" cy="32" r="31" fill="url(#ghalo)"/>
+        <g class="band"><circle cx="32" cy="32" r="19" fill="none" stroke="url(#gband)" stroke-width="7"/></g>
+        <circle cx="32" cy="32" r="22.4" fill="none" stroke="#5a3d0b" stroke-opacity=".35" stroke-width=".8"/>
+        <circle cx="32" cy="32" r="15.6" fill="none" stroke="#5a3d0b" stroke-opacity=".35" stroke-width=".8"/>
+      </svg>
+      <div>
+        <h1>Le mie GitHub Pages</h1>
+        <div class="who" id="who"></div>
+      </div>
     </div>
     <div class="tools">
       <input id="q" type="search" placeholder="Cerca per nome o descrizione" aria-label="Cerca">
@@ -83,6 +207,17 @@ footer a{color:var(--muted)}
     </div>
   </header>
 
+  <div class="divider" aria-hidden="true">
+    <svg viewBox="0 0 600 22" preserveAspectRatio="xMidYMid meet">
+      <g fill="none" stroke="currentColor" stroke-width="1.2">
+        <path d="M10 11H262M338 11H590"/>
+        <path d="M262 11c10-9 20-9 26 0c-6 9-16 9-26 0Z M338 11c-10-9-20-9-26 0c6 9 16 9 26 0Z"/>
+        <path d="M300 2l9 9-9 9-9-9Z" fill="currentColor"/>
+        <circle cx="236" cy="11" r="2" fill="currentColor"/><circle cx="364" cy="11" r="2" fill="currentColor"/>
+      </g>
+    </svg>
+  </div>
+
   <form class="ask" id="ask" hidden>
     <input id="user" placeholder="Nome utente GitHub" aria-label="Nome utente GitHub" autocomplete="off">
     <button type="submit">Mostra</button>
@@ -91,12 +226,13 @@ footer a{color:var(--muted)}
   <p class="status" id="status" aria-live="polite">Caricamento…</p>
   <div class="grid" id="grid"></div>
 
-  <footer>Elenco generato dai repository pubblici con GitHub Pages attivo. I repository privati non compaiono.</footer>
+  <footer id="foot">Elenco generato dai repository pubblici con GitHub Pages attivo. I repository privati non compaiono.</footer>
 </div>
 
 <script>
 (() => {
   const $ = s => document.querySelector(s);
+  const root = document.documentElement;
   const params = new URLSearchParams(location.search);
   const host = location.hostname.toLowerCase();
   let user = params.get('u') || (host.endsWith('.github.io') ? host.replace(/\.github\.io$/, '') : '');
@@ -109,21 +245,34 @@ footer a{color:var(--muted)}
   const fmtDate = d => new Date(d).toLocaleDateString('it-IT', { day:'2-digit', month:'short', year:'numeric' });
   const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 
+  // ---- testi: normali e in tema ----
+  const T = {
+    plain: { q:'Cerca per nome o descrizione', who:u=>u+'.github.io', count:n=>`${n} ${n===1?'sito pubblicato':'siti pubblicati'}`,
+      some:(a,b)=>`${a} di ${b} siti`, none:'Nessun repository pubblico con GitHub Pages attivo.', nomatch:'Nessun sito corrisponde alla ricerca.',
+      upd:'agg.', repo:'repository', arch:'Archiviato', loading:'Lettura dei repository da GitHub…', ph:'anteprima…', ph2:'anteprima non disponibile',
+      foot:'Elenco generato dai repository pubblici con GitHub Pages attivo. I repository privati non compaiono.' },
+    fx: { q:'Cerca un reame…', who:u=>'Cronache dei reami di '+u, count:n=>`${n} ${n===1?'reame scoperto':'reami scoperti'}`,
+      some:(a,b)=>`${a} reami su ${b}`, none:'Nessun reame è ancora apparso sulla mappa.', nomatch:'Nessun reame risponde a questo nome.',
+      upd:'ultimo viaggio', repo:'archivio', arch:'Chiuso', loading:'Si consultano le antiche mappe…', ph:'la nebbia si dirada…', ph2:'terra avvolta nella nebbia',
+      foot:'Mappa tracciata dai repository pubblici con GitHub Pages attivo. Le terre private restano nascoste.' }
+  };
+  let fx = root.classList.contains('fx');
+  const t = () => fx ? T.fx : T.plain;
+
   function pageUrl(r) {
     const userSite = r.name.toLowerCase() === (r.owner.login + '.github.io').toLowerCase();
     const def = 'https://' + r.owner.login.toLowerCase() + '.github.io/' + (userSite ? '' : r.name + '/');
-    // se il repository ha un sito personalizzato indicato in "Website", usa quello
     if (r.homepage && /^https?:\/\//.test(r.homepage) && !/github\.com/.test(r.homepage)) return r.homepage;
     return def;
   }
 
   async function load(force) {
     if (!user) { $('#ask').hidden = false; $('#status').textContent = 'Scrivi il nome utente GitHub da elencare.'; $('#grid').innerHTML = ''; return; }
-    $('#who').textContent = user + '.github.io';
+    $('#who').textContent = t().who(user);
     const key = 'pages-index:' + user.toLowerCase();
     const cached = store.get(key);
     if (cached && !force && Date.now() - cached.t < 10 * 60 * 1000) { repos = cached.repos; render(); return; }
-    $('#status').className = 'status'; $('#status').textContent = 'Lettura dei repository da GitHub…';
+    $('#status').className = 'status'; $('#status').textContent = t().loading;
     try {
       let all = [], page = 1;
       while (page <= 10) {
@@ -149,6 +298,7 @@ footer a{color:var(--muted)}
   }
 
   function render() {
+    const L = t();
     const q = $('#q').value.trim().toLowerCase();
     const sort = $('#sort').value;
     let list = repos.filter(r => !q || (r.name + ' ' + (r.desc || '')).toLowerCase().includes(q));
@@ -156,61 +306,114 @@ footer a{color:var(--muted)}
       : sort === 'created' ? (a,b) => b.created.localeCompare(a.created)
       : (a,b) => b.updated.localeCompare(a.updated));
     $('#status').className = 'status';
-    $('#status').textContent = repos.length
-      ? (q ? `${list.length} di ${repos.length} siti` : `${repos.length} ${repos.length === 1 ? 'sito pubblicato' : 'siti pubblicati'}`)
-      : 'Nessun repository pubblico con GitHub Pages attivo.';
-    $('#grid').innerHTML = list.length ? list.map(r => `
-      <article class="card">
-        <div class="thumb" data-src="${esc(r.url)}"><span class="ph">anteprima…</span><a href="${esc(r.url)}" aria-label="Apri ${esc(r.name)}" tabindex="-1"></a></div>
+    $('#status').textContent = repos.length ? (q ? L.some(list.length, repos.length) : L.count(repos.length)) : L.none;
+    $('#grid').innerHTML = list.length ? list.map((r, i) => `
+      <article class="card" style="--i:${Math.min(i, 12)}">
+        ${r.archived ? `<span class="chip">${L.arch}</span>` : ''}
+        <div class="thumb" data-src="${esc(r.url)}"><span class="ph">${L.ph}</span><a href="${esc(r.url)}" aria-label="Apri ${esc(r.name)}" tabindex="-1"></a></div>
         <h2><a href="${esc(r.url)}">${esc(r.name)}</a></h2>
         <a class="url" href="${esc(r.url)}">${esc(r.url.replace(/^https?:\/\//, ''))}</a>
         ${r.desc ? `<p>${esc(r.desc)}</p>` : ''}
         <div class="meta">
-          ${r.archived ? '<span class="chip">Archiviato</span>' : ''}
-          <span>agg. ${fmtDate(r.updated)}</span>
+          <span>${L.upd} ${fmtDate(r.updated)}</span>
           ${r.lang ? `<span>${esc(r.lang)}</span>` : ''}
-          <a href="${esc(r.repo)}">repository</a>
+          <a href="${esc(r.repo)}">${L.repo}</a>
         </div>
       </article>`).join('')
-      : (repos.length ? '<div class="empty">Nessun sito corrisponde alla ricerca.</div>' : '');
-    document.querySelectorAll('.thumb').forEach(t => { resizeObs.observe(t); if (previews) io.observe(t); });
+      : (repos.length ? `<div class="empty">${L.nomatch}</div>` : '');
+    document.querySelectorAll('.thumb').forEach(th => { resizeObs.observe(th); if (previews) io.observe(th); });
   }
 
   // ---- anteprime: il sito vero, rimpicciolito, caricato solo quando la scheda è visibile ----
   let previews = store.get('pages-index:prev') !== false;
   const W = 1280;
-  const fit = t => { const f = t.querySelector('iframe'); if (f) f.style.transform = `scale(${t.clientWidth / W})`; };
+  const fit = th => { const f = th.querySelector('iframe'); if (f) f.style.transform = `scale(${th.clientWidth / W})`; };
   const resizeObs = new ResizeObserver(es => es.forEach(e => fit(e.target)));
   const io = new IntersectionObserver(es => es.forEach(e => {
     if (!e.isIntersecting) return;
-    const t = e.target; io.unobserve(t);
-    if (t.querySelector('iframe')) return;
+    const th = e.target; io.unobserve(th);
+    if (th.querySelector('iframe')) return;
     const f = document.createElement('iframe');
-    f.src = t.dataset.src;
-    f.title = 'Anteprima di ' + t.dataset.src;
-    f.setAttribute('sandbox', 'allow-scripts');      // niente navigazione, popup o accesso ai dati di questa pagina
+    f.src = th.dataset.src;
+    f.title = 'Anteprima di ' + th.dataset.src;
+    f.setAttribute('sandbox', 'allow-scripts');
     f.setAttribute('scrolling', 'no');
     f.tabIndex = -1;
-    f.addEventListener('load', () => { f.classList.add('ready'); const ph = t.querySelector('.ph'); if (ph) ph.remove(); });
-    setTimeout(() => { const ph = t.querySelector('.ph'); if (ph && !f.classList.contains('ready')) ph.textContent = 'anteprima non disponibile'; }, 15000);
-    t.insertBefore(f, t.querySelector('a'));
-    fit(t);
+    f.addEventListener('load', () => { f.classList.add('ready'); const ph = th.querySelector('.ph'); if (ph) ph.remove(); });
+    setTimeout(() => { const ph = th.querySelector('.ph'); if (ph && !f.classList.contains('ready')) ph.textContent = t().ph2; }, 15000);
+    th.insertBefore(f, th.querySelector('a'));
+    fit(th);
   }), { rootMargin: '300px' });
   function setPreviews(on) {
     previews = on; store.set('pages-index:prev', on);
     document.body.classList.toggle('noprev', !on);
     $('#prev').textContent = 'Anteprime: ' + (on ? 'sì' : 'no');
     $('#prev').setAttribute('aria-pressed', on);
-    if (on) document.querySelectorAll('.thumb').forEach(t => { if (!t.querySelector('iframe')) io.observe(t); });
+    if (on) document.querySelectorAll('.thumb').forEach(th => { if (!th.querySelector('iframe')) io.observe(th); });
+  }
+
+  // ---- braci e lucciole (solo con il tema attivo) ----
+  const cv = $('#embers'), cx = cv.getContext('2d');
+  const still = matchMedia('(prefers-reduced-motion: reduce)');
+  let parts = [], raf = 0, dpr = 1;
+  function sizeCanvas() {
+    dpr = Math.min(window.devicePixelRatio || 1, 2);
+    cv.width = innerWidth * dpr; cv.height = innerHeight * dpr;
+  }
+  function spawn(y) {
+    return { x: Math.random() * innerWidth, y: y ?? innerHeight + 10, r: .8 + Math.random() * 2.2,
+      vy: .15 + Math.random() * .45, vx: (Math.random() - .5) * .25, ph: Math.random() * 6.28, sp: .01 + Math.random() * .03 };
+  }
+  function frame() {
+    cx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    cx.clearRect(0, 0, innerWidth, innerHeight);
+    const dark = getComputedStyle(root).colorScheme === 'dark';
+    for (const p of parts) {
+      p.y -= p.vy; p.ph += p.sp; p.x += p.vx + Math.sin(p.ph) * .3;
+      if (p.y < -10) Object.assign(p, spawn());
+      const a = (.35 + .35 * Math.sin(p.ph * 2)) * Math.min(1, p.y / (innerHeight * .25));
+      const g = cx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.r * 4);
+      g.addColorStop(0, dark ? `rgba(255,214,120,${a})` : `rgba(190,130,30,${a * .8})`);
+      g.addColorStop(1, 'rgba(255,190,80,0)');
+      cx.fillStyle = g; cx.beginPath(); cx.arc(p.x, p.y, p.r * 4, 0, 6.283); cx.fill();
+    }
+    raf = requestAnimationFrame(frame);
+  }
+  function startEmbers() {
+    stopEmbers();
+    if (!fx || still.matches || document.hidden) return;
+    sizeCanvas();
+    const n = Math.round(Math.min(55, innerWidth / 22));
+    parts = Array.from({ length: n }, () => spawn(Math.random() * innerHeight));
+    raf = requestAnimationFrame(frame);
+  }
+  function stopEmbers() { cancelAnimationFrame(raf); raf = 0; cx.clearRect(0, 0, cv.width, cv.height); }
+  addEventListener('resize', () => { if (raf) sizeCanvas(); });
+  document.addEventListener('visibilitychange', () => document.hidden ? stopEmbers() : startEmbers());
+  still.addEventListener?.('change', startEmbers);
+
+  // ---- interruttore del tema ----
+  function setFx(on) {
+    fx = on; store.set('pages-index:fx', on);
+    root.classList.toggle('fx', on);
+    $('#fxlbl').textContent = 'Tema fantasy: ' + (on ? 'sì' : 'no');
+    $('#fxbtn').setAttribute('aria-pressed', on);
+    $('#q').placeholder = t().q;
+    $('#foot').textContent = t().foot;
+    if (user) $('#who').textContent = t().who(user);
+    if (repos.length || $('#grid').innerHTML) render();
+    startEmbers();
   }
 
   $('#q').addEventListener('input', render);
   $('#sort').addEventListener('change', () => { render(); store.set('pages-index:sort', $('#sort').value); });
   $('#reload').addEventListener('click', () => load(true));
   $('#prev').addEventListener('click', () => setPreviews(!previews));
-  setPreviews(previews);
+  $('#fxbtn').addEventListener('click', () => setFx(!fx));
   $('#ask').addEventListener('submit', e => { e.preventDefault(); user = $('#user').value.trim(); if (user) { $('#ask').hidden = true; load(true); } });
   const s = store.get('pages-index:sort'); if (s) $('#sort').value = s;
+  setPreviews(previews);
+  setFx(fx);
   load(false);
 })();
 </script>
